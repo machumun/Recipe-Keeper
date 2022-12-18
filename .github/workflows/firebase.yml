@@ -17,6 +17,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with: 
+          cmd: npm -v
           node-version: 16.13.1
           cache: npm
    
