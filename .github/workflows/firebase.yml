@@ -1,59 +1,32 @@
-name: Deploy to Firebase Hosting
+name: Deploy to firebase
 
 on:
   push:
     branches:
       - main
-  repository_dispatch:
 
 jobs:
   deploy:
-    name: Build & Deploy
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.13.1]
-
+        node-version: ['16.13.1']
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2.0.0
-      - name: Set up Node
-        uses: actions/setup-node@v2.1.2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Get yarn cache
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with: 
+          node-version: 16.13.1
+
       - name: yarn install
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
-      - name: Set up gcloud CLI
-        uses: google-github-actions/setup-gcloud@master
+        uses: borales/actions-yarn@v2.0.0
         with:
-          version: 'latest'
-          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-      - name: Download local environment variables
-        run: |
-          gsutil cp gs://<---storage path---> .env
-      - name: yarn build & export
-        run: yarn export
-      - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+          cmd: install
+
+      - name: yarn run deploy:token
+        uses: borales/actions-yarn@v2.0.0
         with:
-          args: deploy --only hosting
+          cmd: deploy:token
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-      - name: Notification to Slack
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: pullreminders/slack-action@master
-        with:
-          args: ‘{\”channel\”:\”<--channelId-->\",\"text\”:\”Firebaseへのデプロイが完了しました\”}’
