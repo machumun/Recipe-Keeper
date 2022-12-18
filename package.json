@@ -24,7 +24,7 @@
     "firebase-tools": "^9.3.0"
   },
   "engines": {
-    "node": "16.13.1",
-    "npm": "8.1.2"
+    "node": "16.X",
+    "npm": "8.X"
   }
 }
