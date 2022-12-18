@@ -12,6 +12,7 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
+    "firebase": "^9.15.0",
     "firebase-admin": "^9.4.2",
     "firebase-functions": "^3.13.1",
     "next": "latest",
@@ -22,9 +23,8 @@
     "firebase-functions-test": "^0.2.3",
     "firebase-tools": "^9.3.0"
   },
-
-  "engines":{
-    "node":"16.13.1",
-    "npm":"8.1.2"
+  "engines": {
+    "node": "16.13.1",
+    "npm": "8.1.2"
   }
 }
